@@ -7,7 +7,7 @@ int main(void)
 {
 
     const int screenWidth = 800;
-    const int screenHeight = 460;
+    const int screenHeight = 640;
     const int gridScale = 20;
     const int cols = screenWidth / gridScale;
     const int rows = screenHeight / gridScale;
@@ -28,15 +28,17 @@ int main(void)
     DisableCursor();
     SetTargetFPS(60);  
 
-    Mesh cube = GenMeshCube(1,1,1);
+    //Mesh cube = GenMeshCube(1,1,1);
 
-    Model cubePerlin = LoadModelFromMesh(cube);
-
-    Image perlinNoise = GenImagePerlinNoise(screenWidth, screenHeight, 0,0, 1);
-    Texture2D perlinTexture = LoadTextureFromImage(perlinNoise);
+    //Model cubePerlin = LoadModelFromMesh(cube);
+    Image heightMap = LoadImage("resources/heightmap.png");
 
 
-    cubePerlin.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = perlinTexture;
+    //Image perlinNoise = GenImagePerlinNoise(100, 100, 0,0, 1);
+
+
+    //Texture2D perlinTexture = LoadTextureFromImage(perlinNoise);
+    //cubePerlin.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = perlinTexture;
 
 
     while (!WindowShouldClose())    // Detect window close button or ESC key
@@ -54,8 +56,14 @@ int main(void)
 
             // works
             //DrawCube((Vector3){10,10,0},1,1,1, BLACK);
-
-            DrawModel(cubePerlin, (Vector3){0, 0,0},1, WHITE);
+            for(int i = 0; i < heightMap.width; i++){
+                for(int j = 0; j < heightMap.height; j++){
+                    Color pixelColor = GetImageColor(heightMap,i,j);
+                    float saturation = (pixelColor.r + pixelColor.g + pixelColor.b) /3;
+                    DrawCube((Vector3){i,0,j},1, saturation/255 * 20,1, (Color){saturation,saturation,saturation,255});
+                }
+            }
+            //DrawModel(cubePerlin, (Vector3){0, 0,0},1, WHITE);
             //DrawTexture(perlinTexture, 0,0, WHITE);
             //DrawTextureEx(perlinTexture, (Vector2){0,0}, 45, 100, BLACK);
 
